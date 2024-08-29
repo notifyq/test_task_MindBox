@@ -9,7 +9,7 @@ namespace Shape.Classes
     /// </summary>
     public class ShapeControl
     {
-        public static ShapeControl Instance { get; } = new ShapeControl();
+        public static ShapeControl Instance { get; } = new ShapeControl(); // думаю было избыточным добавлять это
         private ShapeControl() { }
 
         public IShape CreateCircle(double radius) // Круг
