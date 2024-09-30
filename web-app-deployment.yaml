@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+spec:
+  replicas: 3  # Количество подов
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: your-docker-image:latest  # Образ
+        resources:
+          requests:
+            memory: "128Mi" 
+            cpu: "100m" 
+          limits:
+            memory: "128Mi" 
+            cpu: "200m"  
+        readinessProbe:
+          httpGet:
+            path: /healthz  
+            port: 80
+          initialDelaySeconds: 10 
+          periodSeconds: 5  
+        livenessProbe: # Жив ли под
+          httpGet:
+            path: /healthz 
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20  
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - web-app
+            topologyKey: "kubernetes.io/hostname"  # Размещение подов на разных нодах 
